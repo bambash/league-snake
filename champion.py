@@ -59,6 +59,7 @@ class Champions():
 class Champion():
     def __init__(self, data):
         # set some default instance attributes
+        # do something better
         self.name = data['name']
         self.id = data['key']
         self.title = data['title']
@@ -71,7 +72,7 @@ class Champion():
                           sort_keys=True, indent=4)
 
 
-# input a list of champions, sort list based on stat (lowest to highest)
+# input champions[], stat; selection sort ascending
 def insertion_sort_by_stat(champions, stat):
     length = range(1, len(champions))
 
@@ -84,7 +85,7 @@ def insertion_sort_by_stat(champions, stat):
     return champions
 
 
-# input a list of champions, sort list based on stat (lowest to highest)
+# input champions[], stat; quick sort ascending
 def quick_sort_by_stat(champions, stat):
     length = len(champions)
     if length <= 1:
@@ -103,7 +104,7 @@ def quick_sort_by_stat(champions, stat):
     return quick_sort_by_stat(lower, stat) + [pivot] + quick_sort_by_stat(higher, stat)
 
 
-# input a list of champions, sort list based on stat (lowest to highest)
+# input champions[], stat; selection sort ascending
 def selection_sort_by_stat(champions, stat):
     length = range(0, len(champions) - 1)
     for i in length:
@@ -115,7 +116,21 @@ def selection_sort_by_stat(champions, stat):
 
     return champions
 
+# input champions[], stat; bubble sort ascending
+
+
+def bubble_sort_by_stat(champions, stat):
+    length = len(champions) - 1
+    is_sorted = False
+    while not is_sorted:
+        is_sorted = True
+        for i in range(0, length):
+            if champions[i].stats[stat] > champions[i+1].stats[stat]:
+                champions[i], champions[i+1] = champions[i+1], champions[i]
+                is_sorted = False
+    return champions
+
 
 champs = Champions()
-mage_health = quick_sort_by_stat(champs.listByChampionTag("mage"), "hp")
+mage_health = bubble_sort_by_stat(champs.listByChampionTag("tank"), "hp")
 [print(c.name, c.stats['hp']) for c in mage_health]
