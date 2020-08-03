@@ -1,16 +1,16 @@
 import json
 import logging
 import time
+import requests
+from versions import DataDragon
 
 # Champions class
 
 
 class Champions():
     def __init__(self):
-        # switch to using remote json from datadragon.
-        with open("champion.json") as f:
-            d = json.load(f)
-        self.data = d['data']
+        self.dd = DataDragon("na")
+        self.data = self.dd.champions['data']
         self.ids = [c for c in self.data.keys()]
 
     # retrun json object of champion data
@@ -20,7 +20,7 @@ class Champions():
 
     # return a list of all champions as Champion class
     def toList(self):
-        return [Champion(self.data[c]) for c in self.data.keys()]
+        return [Champion(self.data[key]) for key in self.data.keys()]
 
     def listByChampionTag(self, tag: str):
         # format tag input
@@ -53,6 +53,25 @@ class Champions():
                 return champion
         except Exception as e:
             print(e)
+
+    def sortByStat(self, stat, champions=None):
+        if champions == None:
+            champions = self.toList()
+        length = len(champions)
+        if length <= 1:
+            return champions
+        else:
+            pivot = champions.pop()
+
+        lower = []
+        higher = []
+        for i in champions:
+            if i.stats[stat] < pivot.stats[stat]:
+                lower.append(i)
+            else:
+                higher.append(i)
+
+        return quick_sort_by_stat(lower, stat) + [pivot] + quick_sort_by_stat(higher, stat)
 
 
 # Champion class
@@ -131,6 +150,5 @@ def bubble_sort_by_stat(champions, stat):
     return champions
 
 
-champs = Champions()
-mage_health = bubble_sort_by_stat(champs.listByChampionTag("tank"), "hp")
-[print(c.name, c.stats['hp']) for c in mage_health]
+def sort_by_stat(champions, stat):
+    return quick_sort_by_stat(champions, stat)
